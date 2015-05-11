@@ -32,9 +32,16 @@ namespace Komissarov.Nsudotnet.Perlin
 				return;
 			}
 
-			NoiseGenerator generator = new NoiseGenerator( GridCount );
+			NoiseGenerator generator = new AsyncNoiseGenerator( GridCount );
+
+			var start = DateTime.Now.Second;
 
 			Bitmap map = generator.GenerateImage( size );
+
+			var end = DateTime.Now.Second;
+
+			Console.Write( end - start );
+			Console.WriteLine( " seconds was taken" );
 
 			map.Save( args[2], System.Drawing.Imaging.ImageFormat.Bmp );
 		}

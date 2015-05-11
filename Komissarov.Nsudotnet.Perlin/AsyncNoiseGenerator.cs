@@ -7,34 +7,17 @@ using System.Threading.Tasks;
 
 namespace Komissarov.Nsudotnet.Perlin
 {
-	class NoiseGenerator
+	class AsyncNoiseGenerator : NoiseGenerator
 	{
-		private float[] _coefficients;
+		private delegate void GridProcessor( int number );
 
-		public NoiseGenerator( int gridCount )
+		public AsyncNoiseGenerator( int gridCount )
+			: base( gridCount )
 		{
-			_coefficients = new float[gridCount];
 
-			Random random = new Random( DateTime.Now.Millisecond );
-
-			float sum = 0f;
-
-			for ( int i = 0; i < gridCount; ++i )
-			{
-				_coefficients[i] = random.Next( );
-				sum += _coefficients[i];
-			}
-
-			for ( int i = 0; i < gridCount; ++i )
-				_coefficients[i] /= sum;
 		}
 
-		public Bitmap GenerateImage( Size size )
-		{
-			return GenerateImage( size, _coefficients );
-		}
-
-		public virtual Bitmap GenerateImage( Size size, params float[] coefficients )
+		public override Bitmap GenerateImage( Size size, params float[] coefficients )
 		{
 			Bitmap map = new Bitmap( size.Width, size.Height );
 
@@ -42,6 +25,8 @@ namespace Komissarov.Nsudotnet.Perlin
 			int m = size.Height / ( 1 << coefficients.Length );
 
 			Grid[,] grids = new Grid[coefficients.Length, 3];
+			float[][, ,] maps = new float[coefficients.Length][, ,];
+			IAsyncResult[] results = new IAsyncResult[coefficients.Length];
 
 			int pow = 1;
 
@@ -53,7 +38,23 @@ namespace Komissarov.Nsudotnet.Perlin
 						Size = size
 					};
 				pow *= 2;
+
+				maps[i] = new float[size.Width, size.Height, 3];
 			}
+
+			GridProcessor processor = number =>
+			{
+				for ( int j = 0; j < size.Height; ++j )
+					for ( int i = 0; i < size.Width; ++i )
+						for ( int k = 0; k < 3; ++k )
+							maps[number][i, j, k] += coefficients[number] * grids[number, k].GetValue( i, j );
+			};
+
+			for ( int k = 0; k < coefficients.Length; ++k )
+				results[k] = processor.BeginInvoke( k, null, null );
+
+			foreach ( var result in results )
+				processor.EndInvoke( result );
 
 			for ( int j = 0; j < size.Height; ++j )
 				for ( int i = 0; i < size.Width; ++i )
@@ -61,7 +62,7 @@ namespace Komissarov.Nsudotnet.Perlin
 					float[] colors = new float[3];
 					for ( int k = 0; k < coefficients.Length; ++k )
 						for ( int l = 0; l < 3; ++l )
-							colors[l] += coefficients[k] * grids[k, l].GetValue( i, j );
+							colors[l] += maps[k][i, j, l];
 
 					for ( int l = 0; l < 3; ++l )
 					{
