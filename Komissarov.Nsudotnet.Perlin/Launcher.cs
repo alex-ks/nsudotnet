@@ -13,9 +13,9 @@ namespace Komissarov.Nsudotnet.Perlin
 
 		public static void Main( string[] args )
 		{
-			if ( args.Length != 3 )
+			if ( args.Length < 3 )
 			{
-				Console.WriteLine( "using: <width> <height> <output image name>.bmp" );
+				Console.WriteLine( "using: <width> <height> <output image name>.bmp opt::<mode>" );
 				return;
 			}
 
@@ -28,11 +28,16 @@ namespace Komissarov.Nsudotnet.Perlin
 			catch ( FormatException e )
 			{
 				Console.WriteLine( "Bad argument!" );
-				Console.WriteLine( "using: <width> <height> <output image name>.bmp" );
+				Console.WriteLine( "using: <width> <height> <output image name>.bmp opt::<mode>" );
 				return;
 			}
 
-			NoiseGenerator generator = new AsyncNoiseGenerator( GridCount );
+			NoiseGenerator generator;
+
+			if ( args.Length == 4 && args[3].Equals( "async" ) )
+				generator = new AsyncNoiseGenerator( GridCount );
+			else
+				generator = new NoiseGenerator( GridCount );
 
 			var start = DateTime.Now.Second;
 
