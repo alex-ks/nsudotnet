@@ -39,14 +39,14 @@ namespace Komissarov.Nsudotnet.Perlin
 			else
 				generator = new NoiseGenerator( GridCount );
 
-			var start = DateTime.Now.Second;
+			var start = DateTime.Now;
 
 			Bitmap map = generator.GenerateImage( size );
 
-			var end = DateTime.Now.Second;
+			var end = DateTime.Now;
 
 			Console.Write( end - start );
-			Console.WriteLine( " seconds was taken" );
+			Console.WriteLine( " elapsed" );
 
 			map.Save( args[2], System.Drawing.Imaging.ImageFormat.Bmp );
 		}
