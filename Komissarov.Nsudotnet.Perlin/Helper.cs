@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Komissarov.Nsudotnet.Perlin
 {
+	/// <summary>
+	/// Contains hardcoded array of floats, required for bicubic interpolation coefficients calculation
+	/// </summary>
 	static class Helper
 	{
 		public static float[,][,] GetFactorsArray( )
@@ -38,29 +41,25 @@ namespace Komissarov.Nsudotnet.Perlin
 }
 
 
+// a bit less hardcoded than following:
 
-//_factors[0, 0] = _swap[1, 1];
-//_factors[0, 1] = 0.5f * ( -_swap[1, 0] + _swap[1, 2] );
-//_factors[0, 2] = _swap[1, 0] - 2.5f * _swap[1, 1] + 2.0f * _swap[1, 2] - 0.5f * _swap[1, 3];
-//_factors[0, 3] = -0.5f * _swap[1, 0] + 1.5f * _swap[1, 1] - 1.5f * _swap[1, 2] + 0.5f * _swap[1, 3];
+//_factors[0, 0] = _buffer[1, 1];
+//_factors[0, 1] = 0.5f * ( -_buffer[1, 0] + _buffer[1, 2] );
+//_factors[0, 2] = _buffer[1, 0] - 2.5f * _buffer[1, 1] + 2.0f * _buffer[1, 2] - 0.5f * _buffer[1, 3];
+//_factors[0, 3] = -0.5f * _buffer[1, 0] + 1.5f * _buffer[1, 1] - 1.5f * _buffer[1, 2] + 0.5f * _buffer[1, 3];
 
-//_factors[1, 0] = 0.5f * ( -_swap[0, 1] + _swap[2, 1] );
-//_factors[1, 1] = 0.25f * ( _swap[0, 0] - _swap[0, 2] - _swap[2, 0] + _swap[2, 2] );
-//_factors[1, 2] = -0.5f * _swap[0, 0] + 1.25f * _swap[0, 1] - _swap[0, 2] + 0.25f * _swap[0, 3]
-//	+ 0.5f * _swap[2, 0] - 1.25f * _swap[2, 1] + _swap[2, 2] - 0.25f * _swap[2, 3];
-//_factors[1, 3] = 0.25f * _swap[0, 0] - 0.75f * _swap[0, 1] + 0.75f * _swap[0, 2] - 0.25f * _swap[0, 3]
-//	- 0.25f * _swap[2, 0] + 0.75f * _swap[2, 1] - 0.75f * _swap[2, 2] + 0.25f * _swap[2, 3];
+//_factors[1, 0] = 0.5f * ( -_buffer[0, 1] + _buffer[2, 1] );
+//_factors[1, 1] = 0.25f * ( _buffer[0, 0] - _buffer[0, 2] - _buffer[2, 0] + _buffer[2, 2] );
+//_factors[1, 2] = -0.5f * _buffer[0, 0] + 1.25f * _buffer[0, 1] - _buffer[0, 2] + 0.25f * _buffer[0, 3]
+//	+ 0.5f * _buffer[2, 0] - 1.25f * _buffer[2, 1] + _buffer[2, 2] - 0.25f * _buffer[2, 3];
+//_factors[1, 3] = 0.25f * _buffer[0, 0] - 0.75f * _buffer[0, 1] + 0.75f * _buffer[0, 2] - 0.25f * _buffer[0, 3]
+//	- 0.25f * _buffer[2, 0] + 0.75f * _buffer[2, 1] - 0.75f * _buffer[2, 2] + 0.25f * _buffer[2, 3];
 
-//_factors[2, 0] = _swap[0, 1] - 2.5f * _swap[1, 1] + 2.0f * _swap[2, 1] - 0.5f * _swap[3, 1];
-//_factors[2, 1] = -0.5f * _swap[0, 0] + 0.5f * _swap[0, 2] + 1.25f * _swap[1, 0] - 1.25f * _swap[1, 2]
-//	- _swap[2, 0] + _swap[2, 2] + 0.25f * _swap[3, 0] - 0.25f * _swap[3, 2];
-//_factors[2, 2] = _swap[0, 0] - 2.5f * _swap[0, 1] + 2.0f * _swap[0, 2] - 0.5f * _swap[0, 3]
-//	- 2.5f * _swap[1, 0] + 6.25f * _swap[1, 1] - 5.0f * _swap[1, 2] + 1.25f * _swap[1, 3]
-//	+ 2.0f * _swap[2, 0] - 5.0f * _swap[2, 1] + 4.0f * _swap[2, 2] - _swap[2, 3]
-//	- 0.5f * _swap[3, 0] + 1.25f * _swap[3, 1] - _swap[3, 2] + 0.25f * _swap[3, 3];
-//_factors[2, 3] = _swap[1, 1];
-
-//_factors[3, 0] = _swap[1, 1];
-//_factors[3, 1] = _swap[1, 1];
-//_factors[3, 2] = _swap[1, 1];
-//_factors[3, 3] = _swap[1, 1];
+//_factors[2, 0] = _buffer[0, 1] - 2.5f * _buffer[1, 1] + 2.0f * _buffer[2, 1] - 0.5f * _buffer[3, 1];
+//_factors[2, 1] = -0.5f * _buffer[0, 0] + 0.5f * _buffer[0, 2] + 1.25f * _buffer[1, 0] - 1.25f * _buffer[1, 2]
+//	- _buffer[2, 0] + _buffer[2, 2] + 0.25f * _buffer[3, 0] - 0.25f * _buffer[3, 2];
+//_factors[2, 2] = _buffer[0, 0] - 2.5f * _buffer[0, 1] + 2.0f * _buffer[0, 2] - 0.5f * _buffer[0, 3]
+//	- 2.5f * _buffer[1, 0] + 6.25f * _buffer[1, 1] - 5.0f * _buffer[1, 2] + 1.25f * _buffer[1, 3]
+//	+ 2.0f * _buffer[2, 0] - 5.0f * _buffer[2, 1] + 4.0f * _buffer[2, 2] - _buffer[2, 3]
+//	- 0.5f * _buffer[3, 0] + 1.25f * _buffer[3, 1] - _buffer[3, 2] + 0.25f * _buffer[3, 3];
+//...

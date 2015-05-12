@@ -33,6 +33,8 @@ namespace Komissarov.Nsudotnet.Perlin
 			}
 
 			NoiseGenerator generator;
+			AsyncNoiseGenerator gen = null;
+			gen.GenerateImage( size, 1, 2, 3 );
 
 			if ( args.Length == 4 && args[3].Equals( "async" ) )
 				generator = new AsyncNoiseGenerator( GridCount );

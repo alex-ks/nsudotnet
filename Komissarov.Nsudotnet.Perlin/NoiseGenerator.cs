@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Komissarov.Nsudotnet.Perlin
 {
+	/// <summary>
+	/// Encapsulates operations with grids
+	/// </summary>
 	class NoiseGenerator
 	{
 		private float[] _coefficients;
@@ -19,12 +22,14 @@ namespace Komissarov.Nsudotnet.Perlin
 
 			float sum = 0f;
 
+			//calculating random coefficients
 			for ( int i = 0; i < gridCount; ++i )
 			{
 				_coefficients[i] = random.Next( );
 				sum += _coefficients[i];
 			}
 
+			//normalizing
 			for ( int i = 0; i < gridCount; ++i )
 				_coefficients[i] /= sum;
 		}
@@ -38,6 +43,7 @@ namespace Komissarov.Nsudotnet.Perlin
 		{
 			Bitmap map = new Bitmap( size.Width, size.Height );
 
+			//last grid step will be twice bigger than original image
 			int n = size.Width / ( 1 << coefficients.Length );
 			int m = size.Height / ( 1 << coefficients.Length );
 
@@ -55,6 +61,7 @@ namespace Komissarov.Nsudotnet.Perlin
 				pow *= 2;
 			}
 
+			//merging content of different grids
 			for ( int j = 0; j < size.Height; ++j )
 				for ( int i = 0; i < size.Width; ++i )
 				{

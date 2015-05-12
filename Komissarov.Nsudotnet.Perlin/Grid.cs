@@ -51,6 +51,7 @@ namespace Komissarov.Nsudotnet.Perlin
 					_grid[i, j] = _random.Next( 50, 255 );
 		}
 
+		//calculation of factors for bicubic interpolation
 		private void CalcFactors( int n, int m )
 		{
 			for ( int i = -1; i < 3; ++i )
@@ -77,7 +78,7 @@ namespace Komissarov.Nsudotnet.Perlin
 							_factors[i, j] += _coefficients[i, j][k, l] * _buffer[k, l];
 		}
 
-
+		//value calculates on demand, caching bicubic coefficients for points from one cell
 		public float GetValue( int x, int y )
 		{
 			if ( x < 0 || x >= Size.Width )

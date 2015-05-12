@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace Komissarov.Nsudotnet.Perlin
 {
+	/// <summary>
+	/// Encapsulates operations with grids, 
+	/// each harmonic is processed in parallel
+	/// </summary>
 	class AsyncNoiseGenerator : NoiseGenerator
 	{
 		private delegate void GridProcessor( int number );
@@ -21,6 +25,7 @@ namespace Komissarov.Nsudotnet.Perlin
 		{
 			Bitmap map = new Bitmap( size.Width, size.Height );
 
+			//last grid step will be twice bigger than original image
 			int n = size.Width / ( 1 << coefficients.Length );
 			int m = size.Height / ( 1 << coefficients.Length );
 
@@ -30,6 +35,7 @@ namespace Komissarov.Nsudotnet.Perlin
 
 			int pow = 1;
 
+			//initializing grids and arrays for intermediate values
 			for ( int i = 0; i < coefficients.Length; ++i )
 			{
 				for ( int j = 0; j < 3; ++j )
@@ -42,6 +48,7 @@ namespace Komissarov.Nsudotnet.Perlin
 				maps[i] = new float[size.Width, size.Height, 3];
 			}
 
+			//calculates interpolated values for each harmonic
 			GridProcessor processor = number =>
 			{
 				for ( int j = 0; j < size.Height; ++j )
@@ -56,6 +63,7 @@ namespace Komissarov.Nsudotnet.Perlin
 			foreach ( var result in results )
 				processor.EndInvoke( result );
 
+			//merging intermediate values
 			for ( int j = 0; j < size.Height; ++j )
 				for ( int i = 0; i < size.Width; ++i )
 				{
