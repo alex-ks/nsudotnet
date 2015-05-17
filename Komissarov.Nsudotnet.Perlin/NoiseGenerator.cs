@@ -43,9 +43,8 @@ namespace Komissarov.Nsudotnet.Perlin
 		{
 			Bitmap map = new Bitmap( size.Width, size.Height );
 
-			//last grid step will be twice bigger than original image
-			int n = size.Width / ( 1 << coefficients.Length );
-			int m = size.Height / ( 1 << coefficients.Length );
+			int n = 2;
+			int m = 2;
 
 			Grid[,] grids = new Grid[coefficients.Length, 3];
 

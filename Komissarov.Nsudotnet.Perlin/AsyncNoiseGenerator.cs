@@ -9,7 +9,7 @@ namespace Komissarov.Nsudotnet.Perlin
 {
 	/// <summary>
 	/// Encapsulates operations with grids, 
-	/// each harmonic is processed in parallel
+	/// each grid step is processed in parallel
 	/// </summary>
 	class AsyncNoiseGenerator : NoiseGenerator
 	{
@@ -25,9 +25,8 @@ namespace Komissarov.Nsudotnet.Perlin
 		{
 			Bitmap map = new Bitmap( size.Width, size.Height );
 
-			//last grid step will be twice bigger than original image
-			int n = size.Width / ( 1 << coefficients.Length );
-			int m = size.Height / ( 1 << coefficients.Length );
+			int n = 2;
+			int m = 2;
 
 			Grid[,] grids = new Grid[coefficients.Length, 3];
 			float[][, ,] maps = new float[coefficients.Length][, ,];
@@ -48,7 +47,7 @@ namespace Komissarov.Nsudotnet.Perlin
 				maps[i] = new float[size.Width, size.Height, 3];
 			}
 
-			//calculates interpolated values for each harmonic
+			//calculates interpolated values for each grid step
 			GridProcessor processor = number =>
 			{
 				for ( int j = 0; j < size.Height; ++j )

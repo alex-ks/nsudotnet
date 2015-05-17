@@ -9,7 +9,7 @@ namespace Komissarov.Nsudotnet.Perlin
 {
 	class Launcher
 	{
-		private const int GridCount = 4;
+		private const int GridCount = 8;
 
 		public static void Main( string[] args )
 		{
@@ -33,8 +33,6 @@ namespace Komissarov.Nsudotnet.Perlin
 			}
 
 			NoiseGenerator generator;
-			AsyncNoiseGenerator gen = null;
-			gen.GenerateImage( size, 1, 2, 3 );
 
 			if ( args.Length == 4 && args[3].Equals( "async" ) )
 				generator = new AsyncNoiseGenerator( GridCount );
@@ -43,7 +41,18 @@ namespace Komissarov.Nsudotnet.Perlin
 
 			var start = DateTime.Now;
 
-			Bitmap map = generator.GenerateImage( size );
+			Bitmap map;
+
+			try
+			{
+				map = generator.GenerateImage( size );
+			}
+			catch ( ArgumentException )
+			{
+				Console.WriteLine( "Image is too small" );
+				return;
+			}
+			
 
 			var end = DateTime.Now;
 
