@@ -10,7 +10,7 @@ namespace Komissarov.Nsudotnet.Perlin
 	class Grid
 	{
 		private int _n, _m;
-		private float[,] _factors, _coefficients, _grid;
+		private float[,] _factors, _grid;
 		private float[] _buffer;
 		private int _lastN, _lastM;
 		private static Random _random;
@@ -44,7 +44,6 @@ namespace Komissarov.Nsudotnet.Perlin
 			_factors = new float[4, 4];
 			_buffer = new float[16];
 			_lastN = _lastM = -1;
-			_coefficients = Helper.GetFactorsArray( );
 			InitGrid( );
 		}
 
@@ -70,7 +69,7 @@ namespace Komissarov.Nsudotnet.Perlin
 			for ( int i = 0; i < 4; ++i )
 				for ( int j = 0; j < 4; ++j )
 					for ( int k = 0; k < 16; ++k )
-						_factors[i, j] += _coefficients[i * 4 + j, k] * _buffer[k] * coef;
+						_factors[i, j] += Helper.FactorsMatrix[i * 4 + j, k] * _buffer[k] * coef;
 		}
 
 		//value calculates on demand, caching bicubic coefficients for points from one cell
