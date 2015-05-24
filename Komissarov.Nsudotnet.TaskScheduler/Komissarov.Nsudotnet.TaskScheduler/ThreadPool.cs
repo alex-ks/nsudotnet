@@ -11,24 +11,12 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 	{
 		private ConcurrentDictionary<IJob, PooledThread> workingThreads;
 		private ConcurrentBag<PooledThread> pooledThreads;
-		
 
 		private class PooledThread
 		{
-			public static int ThreadCounter
-			{
-				set;
-				get;
-			}
-
 			private ConcurrentQueue<Tuple<IJob, object>> tasks;
 			private ThreadPool pool;
 			private Thread thread;
-
-			static PooledThread( )
-			{
-				ThreadCounter = 0;
-			}
 
 			public PooledThread( ThreadPool pool )
 			{
@@ -36,7 +24,7 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 				this.pool = pool;
 				thread = new Thread( this.Execute );
 				thread.IsBackground = true;
-				thread.Name = "Thread #" + ThreadCounter++;
+				thread.Name = "Thread #" + pool.ThreadCounter++;
 			}
 
 			public void Start( )
@@ -63,7 +51,7 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 			{
 				while ( true )
 				{
-					Tuple<IJob, object> task = default( Tuple<IJob, object> );
+					Tuple<IJob, object> task = null;
 					try
 					{
 						if ( tasks.TryDequeue( out task ) )
@@ -71,7 +59,7 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 					}
 					catch ( ThreadInterruptedException )
 					{
-						if ( task != default( Tuple<IJob, object> ) )
+						if ( task != null )
 						{
 							PooledThread thread;
 							pool.workingThreads.TryRemove( task.Item1, out thread );
@@ -99,10 +87,17 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 			}
 		}
 
+		public int ThreadCounter
+		{
+			set;
+			get;
+		}
+
 		public ThreadPool( )
 		{
 			pooledThreads = new ConcurrentBag<PooledThread>( );
 			workingThreads = new ConcurrentDictionary<IJob, PooledThread>( );
+			ThreadCounter = 0;
 		}
 
 		public void LaunchTask( IJob task, object argument )
@@ -161,7 +156,7 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 			}
 			workingThreads.Clear( );
 
-			PooledThread.ThreadCounter = 0;
+			ThreadCounter = 0;
 		}
 	}
 }

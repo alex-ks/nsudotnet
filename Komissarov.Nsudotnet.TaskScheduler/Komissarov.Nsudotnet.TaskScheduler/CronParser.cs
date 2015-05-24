@@ -51,59 +51,56 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 			return ( 7 - ( int )startTime.DayOfWeek + dayOfWeek ) % 7;
 		}
 
-		public DateTime NextDate
+		public DateTime CalcNextDate( )
 		{
-			get
+			DateTime now = DateTime.Now;
+
+			DateTime next = new DateTime(
+				now.Year,
+				cronSchedule[3] == -1 ? now.Month : cronSchedule[3],
+				cronSchedule[2] == -1 ? now.Day : cronSchedule[2],
+				cronSchedule[1] == -1 ? now.Hour : cronSchedule[1],
+				cronSchedule[0] == -1 ? now.Minute : cronSchedule[0],
+				0 );
+
+			for ( int i = 0; i < 4; ++i )
 			{
-				DateTime now = DateTime.Now;
+				if ( next > now )
+					break;
 
-				DateTime next = new DateTime(
-					now.Year,
-					cronSchedule[3] == -1 ? now.Month : cronSchedule[3],
-					cronSchedule[2] == -1 ? now.Day : cronSchedule[2],
-					cronSchedule[1] == -1 ? now.Hour : cronSchedule[1],
-					cronSchedule[0] == -1 ? now.Minute : cronSchedule[0],
-					0 );
-
-				for ( int i = 0; i < 4; ++i )
-				{
-					if ( next > now )
-						break;
-
-					if ( cronSchedule[i] == -1 )
-						next = next.AddSomething( i + 1, 1 );
-				}
-
-				if ( next < now )
-					next = next.AddYears( 1 );
-
-				if ( cronSchedule[4] != -1 )
-				{
-					if ( cronSchedule[2] == -1 )
-					{
-						while ( ( int )next.DayOfWeek != cronSchedule[4] )
-						{
-							int daysToAdd = GetAdditionalDays( next, cronSchedule[4] );
-							if ( cronSchedule[3] == -1 || next.AddDays( daysToAdd ).Month == cronSchedule[3] )
-								next = next.AddDays( daysToAdd );
-							else
-								next.AddYears( 1 );
-						}
-					}
-					else
-					{
-						while ( ( int )next.DayOfWeek != cronSchedule[4] )
-						{
-							if ( cronSchedule[3] == -1 )
-								next = next.AddMonths( 1 );
-							else
-								next = next.AddYears( 1 );
-						}
-					}
-				}
-
-				return next;
+				if ( cronSchedule[i] == -1 )
+					next = next.AddSomething( i + 1, 1 );
 			}
+
+			if ( next < now )
+				next = next.AddYears( 1 );
+
+			if ( cronSchedule[4] != -1 )
+			{
+				if ( cronSchedule[2] == -1 )
+				{
+					while ( ( int )next.DayOfWeek != cronSchedule[4] )
+					{
+						int daysToAdd = GetAdditionalDays( next, cronSchedule[4] );
+						if ( cronSchedule[3] == -1 || next.AddDays( daysToAdd ).Month == cronSchedule[3] )
+							next = next.AddDays( daysToAdd );
+						else
+							next = next.AddYears( 1 );
+					}
+				}
+				else
+				{
+					while ( ( int )next.DayOfWeek != cronSchedule[4] )
+					{
+						if ( cronSchedule[3] == -1 )
+							next = next.AddMonths( 1 );
+						else
+							next = next.AddYears( 1 );
+					}
+				}
+			}
+
+			return next;
 		}
 	}
 }

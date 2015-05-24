@@ -83,7 +83,7 @@ namespace Komissarov.Nsudotnet.TaskScheduler
 			{
 				while ( true )
 				{
-					DateTime next = cronParser.NextDate;
+					DateTime next = cronParser.CalcNextDate( );
 					Thread.Sleep( next - DateTime.Now );
 					job.Execute( argument );
 				}
